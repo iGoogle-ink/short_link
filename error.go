@@ -24,18 +24,18 @@ func (se StatusError) Status() int {
 	return se.Code
 }
 
-func errRsp(w http.ResponseWriter, err error) {
+func ErrRsp(w http.ResponseWriter, err error) {
 	switch e := err.(type) {
 	case Error:
 		log.Printf("HTTP %d - %s:", e.Status(), e.Error())
-		errRspWithJson(w, e.Status(), err.Error())
+		RspWithJson(w, e.Status(), err.Error())
 	default:
 		log.Println("default error:", err)
-		errRspWithJson(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		RspWithJson(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 	}
 }
 
-func errRspWithJson(w http.ResponseWriter, code int, payload interface{}) {
+func RspWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	rsp, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
